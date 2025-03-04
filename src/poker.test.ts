@@ -26,4 +26,18 @@ describe('Poker hand evaluation', () => {
     };
     expect(evaluateHand(hand)).toBe(HandRank.ONE_PAIR);
   });
+
+  test('should return TWO_PAIR for two pairs of cards', () => {
+    const hand: Hand = {
+      cards: [
+        { rank: "A", suit: "hearts" },
+        { rank: "A", suit: "diamonds" },
+        { rank: "K", suit: "spades" },
+        { rank: "K", suit: "clubs" },
+        { rank: "2", suit: "hearts" },
+      ]
+    };
+    expect(evaluateHand(hand)).toBe(HandRank.TWO_PAIR);
+  });
+  
 });

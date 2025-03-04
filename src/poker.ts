@@ -26,9 +26,19 @@ export enum HandRank {
 
 export function evaluateHand(hand: Hand): HandRank {
   const ranks = hand.cards.map(card => card.rank);
-  const uniqueRanks = new Set(ranks);
+  const rankCount = new Map<string, number>();
+
+  ranks.forEach(rank => {
+    rankCount.set(rank, (rankCount.get(rank) || 0) + 1);
+  });
+
+  const pairCount = Array.from(rankCount.values()).filter(count => count === 2).length;
   
-  if (uniqueRanks.size === 4) { // Il y a une paire
+  if (pairCount === 2) { // Deux paires
+    return HandRank.TWO_PAIR;
+  }
+  
+  if (pairCount === 1) { // Une paire
     return HandRank.ONE_PAIR;
   }
 
