@@ -245,10 +245,8 @@ function compareRoyalFlush(sortedHand1: Card[], sortedHand2: Card[]): number {
 
 function compareKickers(sortedHand1: Card[], sortedHand2: Card[]): number {
   // Comparer les kickers (cartes restantes)
-  console.log(sortedHand1, sortedHand2);
   sortedHand1 = removeSpecificCombinations(sortedHand1);
   sortedHand2 = removeSpecificCombinations(sortedHand2);
-  console.log(sortedHand1, sortedHand2);
 
   for (let i = 0; i < 5; i++) {
     const value1 = getCardValue(sortedHand1[i].rank);
