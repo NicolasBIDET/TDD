@@ -52,10 +52,28 @@ export function compareHands(hand1: Hand, hand2: Hand): number {
   if (rank1 > rank2) return 1;
   if (rank1 < rank2) return -1;
 
-  const highestCard1 = Math.max(...hand1.cards.map(card => parseInt(card.rank)));
-  const highestCard2 = Math.max(...hand2.cards.map(card => parseInt(card.rank)));
-  console.log(highestCard1)
-  console.log(highestCard2)
+  const highestCard1 = Math.max(...hand1.cards.map(card => getCardValue(card.rank)));
+  const highestCard2 = Math.max(...hand2.cards.map(card => getCardValue(card.rank)));
 
   return highestCard1 > highestCard2 ? 1 : (highestCard1 == highestCard2 ? 0: -1);
+}
+
+export function getCardValue(rank: Rank): number {
+  const valueMap: { [key in Rank]: number } = {
+    "2": 2,
+    "3": 3,
+    "4": 4,
+    "5": 5,
+    "6": 6,
+    "7": 7,
+    "8": 8,
+    "9": 9,
+    "10": 10,
+    "J": 11,
+    "Q": 12,
+    "K": 13,
+    "A": 14
+  };
+
+  return valueMap[rank];
 }
