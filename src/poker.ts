@@ -51,5 +51,11 @@ export function compareHands(hand1: Hand, hand2: Hand): number {
 
   if (rank1 > rank2) return 1;
   if (rank1 < rank2) return -1;
-  return 0; // TODO: Comparer en détail en cas d'égalité
+
+  const highestCard1 = Math.max(...hand1.cards.map(card => parseInt(card.rank)));
+  const highestCard2 = Math.max(...hand2.cards.map(card => parseInt(card.rank)));
+  console.log(highestCard1)
+  console.log(highestCard2)
+
+  return highestCard1 > highestCard2 ? 1 : (highestCard1 == highestCard2 ? 0: -1);
 }

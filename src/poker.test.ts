@@ -1,4 +1,4 @@
-import { evaluateHand, HandRank, Hand, Rank, Suit } from './poker';
+import { evaluateHand, HandRank, Hand, Rank, Suit, compareHands } from './poker';
 
 describe('Poker hand evaluation', () => {
   test('should return HIGH_CARD for a single card', () => {
@@ -40,4 +40,25 @@ describe('Poker hand evaluation', () => {
     expect(evaluateHand(hand)).toBe(HandRank.TWO_PAIR);
   });
   
+  test('should return 1 when hand1 has a higher rank than hand2', () => {
+    const hand1: Hand = {
+      cards: [
+        { rank: "10", suit: "hearts" },
+        { rank: "10", suit: "diamonds" },
+        { rank: "2", suit: "spades" },
+        { rank: "3", suit: "clubs" },
+        { rank: "4", suit: "hearts" },
+      ]
+    };
+    const hand2: Hand = {
+      cards: [
+        { rank: "9", suit: "hearts" },
+        { rank: "9", suit: "diamonds" },
+        { rank: "2", suit: "spades" },
+        { rank: "3", suit: "clubs" },
+        { rank: "4", suit: "hearts" },
+      ]
+    };
+    expect(compareHands(hand1, hand2)).toBe(1);
+  });
 });
