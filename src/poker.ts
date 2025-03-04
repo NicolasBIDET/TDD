@@ -25,7 +25,13 @@ export enum HandRank {
 }
 
 export function evaluateHand(hand: Hand): HandRank {
-  // TODO: Implémenter la logique d'évaluation de la main
+  const ranks = hand.cards.map(card => card.rank);
+  const uniqueRanks = new Set(ranks);
+  
+  if (uniqueRanks.size === 4) { // Il y a une paire
+    return HandRank.ONE_PAIR;
+  }
+
   return HandRank.HIGH_CARD;
 }
 
