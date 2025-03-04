@@ -153,7 +153,7 @@ function compareOnePair(sortedHand1: Card[], sortedHand2: Card[]): number {
   if (getCardValue(pair1.rank) < getCardValue(pair2.rank)) return -1;
 
   // Si les paires sont égales, comparer les kickers
-  return compareKickers(sortedHand1, sortedHand2, 2); // Commence après la paire
+  return compareKickers(sortedHand1, sortedHand2); // Commence après la paire
 }
 
 function compareTwoPair(sortedHand1: Card[], sortedHand2: Card[]): number {
@@ -168,18 +168,18 @@ function compareTwoPair(sortedHand1: Card[], sortedHand2: Card[]): number {
   if (getCardValue(pair1b.rank) < getCardValue(pair2b.rank)) return -1;
 
   // Si les deux paires sont égales, comparer les kickers
-  return compareKickers(sortedHand1, sortedHand2, 4); // Commence après les deux paires
+  return compareKickers(sortedHand1, sortedHand2); // Commence après les deux paires
 }
 
 function compareThreeOfAKind(sortedHand1: Card[], sortedHand2: Card[]): number {
   const threeOfAKind1 = findThreeOfAKind(sortedHand1);
   const threeOfAKind2 = findThreeOfAKind(sortedHand2);
 
-  if (threeOfAKind1.rank > threeOfAKind2.rank) return 1;
-  if (threeOfAKind1.rank < threeOfAKind2.rank) return -1;
+  if (getCardValue(threeOfAKind1.rank) > getCardValue(threeOfAKind2.rank)) return 1;
+  if (getCardValue(threeOfAKind1.rank) < getCardValue(threeOfAKind2.rank)) return -1;
 
   // Comparer les kickers si nécessaire
-  return compareKickers(sortedHand1, sortedHand2, 3);
+  return compareKickers(sortedHand1, sortedHand2);
 }
 
 function compareStraight(sortedHand1: Card[], sortedHand2: Card[]): number {
@@ -203,15 +203,15 @@ function compareFullHouse(sortedHand1: Card[], sortedHand2: Card[]): number {
   const threeOfAKind1 = findThreeOfAKind(sortedHand1);
   const threeOfAKind2 = findThreeOfAKind(sortedHand2);
 
-  if (threeOfAKind1.rank > threeOfAKind2.rank) return 1;
-  if (threeOfAKind1.rank < threeOfAKind2.rank) return -1;
+  if (getCardValue(threeOfAKind1.rank) > getCardValue(threeOfAKind2.rank)) return 1;
+  if (getCardValue(threeOfAKind1.rank) < getCardValue(threeOfAKind2.rank)) return -1;
 
   // Si les "Three of a Kind" sont égaux, comparer les paires
   const pair1 = findPair(sortedHand1);
   const pair2 = findPair(sortedHand2);
 
-  if (pair1.rank > pair2.rank) return 1;
-  if (pair1.rank < pair2.rank) return -1;
+  if (getCardValue(pair1.rank) > getCardValue(pair2.rank)) return 1;
+  if (getCardValue(pair1.rank) < getCardValue(pair2.rank)) return -1;
 
   return 0; // Si tout est égal
 }
@@ -220,11 +220,11 @@ function compareFourOfAKind(sortedHand1: Card[], sortedHand2: Card[]): number {
   const fourOfAKind1 = findFourOfAKind(sortedHand1);
   const fourOfAKind2 = findFourOfAKind(sortedHand2);
 
-  if (fourOfAKind1.rank > fourOfAKind2.rank) return 1;
-  if (fourOfAKind1.rank < fourOfAKind2.rank) return -1;
+  if (getCardValue(fourOfAKind1.rank) > getCardValue(fourOfAKind2.rank)) return 1;
+  if (getCardValue(fourOfAKind1.rank) < getCardValue(fourOfAKind2.rank)) return -1;
 
   // Si les "Four of a Kind" sont égaux, comparer les kickers
-  return compareKickers(sortedHand1, sortedHand2, 4);
+  return compareKickers(sortedHand1, sortedHand2);
 }
 
 function compareStraightFlush(sortedHand1: Card[], sortedHand2: Card[]): number {
@@ -243,9 +243,14 @@ function compareRoyalFlush(sortedHand1: Card[], sortedHand2: Card[]): number {
   return 0; // Si c'est un Royal Flush, c'est égal par définition
 }
 
-function compareKickers(sortedHand1: Card[], sortedHand2: Card[], startIndex: number): number {
+function compareKickers(sortedHand1: Card[], sortedHand2: Card[]): number {
   // Comparer les kickers (cartes restantes)
-  for (let i = startIndex; i < 5; i++) {
+  console.log(sortedHand1, sortedHand2);
+  sortedHand1 = removeSpecificCombinations(sortedHand1);
+  sortedHand2 = removeSpecificCombinations(sortedHand2);
+  console.log(sortedHand1, sortedHand2);
+
+  for (let i = 0; i < 5; i++) {
     const value1 = getCardValue(sortedHand1[i].rank);
     const value2 = getCardValue(sortedHand2[i].rank);
 
@@ -322,4 +327,33 @@ function sortCardsByValue(hand: Hand): Card[] {
       value: getCardValue(card.rank) // Ajouter une valeur numérique pour la comparaison
     }))
     .sort((a, b) => b.value - a.value); // Trier par valeur décroissante
+}
+
+function removeSpecificCombinations(cards: Card[]): Card[] {
+  const rankCount = new Map<string, number>();
+
+  // Comptage des cartes par rang
+  cards.forEach(card => {
+    rankCount.set(card.rank, (rankCount.get(card.rank) || 0) + 1);
+  });
+
+  // Fonction pour retirer les Paires, Three of a Kind, Four of a Kind
+  const removeCardsOfRank = (rank: string): Card[] => {
+    return cards.filter(card => card.rank !== rank);
+  };
+
+  // Retirer les Paires, Three of a Kind et Four of a Kind
+  rankCount.forEach((count, rank) => {
+    if (count === 2) { // Pair
+      cards = removeCardsOfRank(rank);
+    }
+    if (count === 3) { // Three of a Kind
+      cards = removeCardsOfRank(rank);
+    }
+    if (count === 4) { // Four of a Kind
+      cards = removeCardsOfRank(rank);
+    }
+  });
+
+  return cards; // Retourner les cartes restantes après suppression
 }

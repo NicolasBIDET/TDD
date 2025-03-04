@@ -440,4 +440,148 @@ describe('Poker hand evaluation', () => {
 
     expect(compareHands(hand1, hand2)).toBe(1); // hand1 (One Pair) > hand2 (High Card)
   });
+  
+  test('should compare two Full House hands', () => {
+    const hand1: Hand = {
+      cards: [
+        { rank: '9', suit: 'hearts' },
+        { rank: '9', suit: 'spades' },
+        { rank: '9', suit: 'diamonds' },
+        { rank: '7', suit: 'clubs' },
+        { rank: '7', suit: 'hearts' },
+      ],
+    };
+
+    const hand2: Hand = {
+      cards: [
+        { rank: '9', suit: 'spades' },
+        { rank: '9', suit: 'clubs' },
+        { rank: '9', suit: 'hearts' },
+        { rank: '8', suit: 'diamonds' },
+        { rank: '8', suit: 'hearts' },
+      ],
+    };
+
+    expect(compareHands(hand1, hand2)).toBe(-1); // hand1 (Full House, 9s over 7s) < hand2 (Full House, 9s over 8s)
+  });
+
+  test('should compare two Flush hands', () => {
+    const hand1: Hand = {
+      cards: [
+        { rank: '2', suit: 'hearts' },
+        { rank: '5', suit: 'hearts' },
+        { rank: '7', suit: 'hearts' },
+        { rank: '9', suit: 'hearts' },
+        { rank: 'J', suit: 'hearts' },
+      ],
+    };
+
+    const hand2: Hand = {
+      cards: [
+        { rank: '3', suit: 'hearts' },
+        { rank: '5', suit: 'hearts' },
+        { rank: '8', suit: 'hearts' },
+        { rank: '9', suit: 'hearts' },
+        { rank: 'K', suit: 'hearts' },
+      ],
+    };
+
+    expect(compareHands(hand1, hand2)).toBe(-1); // hand1 (Flush, high card J) < hand2 (Flush, high card K)
+  });
+
+  test('should compare two Three of a Kind hands', () => {
+    const hand1: Hand = {
+      cards: [
+        { rank: '8', suit: 'hearts' },
+        { rank: '8', suit: 'spades' },
+        { rank: '8', suit: 'diamonds' },
+        { rank: '3', suit: 'clubs' },
+        { rank: 'A', suit: 'hearts' },
+      ],
+    };
+
+    const hand2: Hand = {
+      cards: [
+        { rank: '8', suit: 'hearts' },
+        { rank: '8', suit: 'spades' },
+        { rank: '8', suit: 'diamonds' },
+        { rank: '4', suit: 'clubs' },
+        { rank: 'K', suit: 'hearts' },
+      ],
+    };
+
+    expect(compareHands(hand1, hand2)).toBe(1); // hand1 (Three of a Kind, 8s, kicker A) > hand2 (Three of a Kind, 8s, kicker K)
+  });
+
+  test('should compare two Full House hands with same three of a kind but different pair', () => {
+    const hand1: Hand = {
+      cards: [
+        { rank: '5', suit: 'hearts' },
+        { rank: '5', suit: 'spades' },
+        { rank: '5', suit: 'diamonds' },
+        { rank: '8', suit: 'clubs' },
+        { rank: '8', suit: 'hearts' },
+      ],
+    };
+
+    const hand2: Hand = {
+      cards: [
+        { rank: '5', suit: 'clubs' },
+        { rank: '5', suit: 'spades' },
+        { rank: '5', suit: 'diamonds' },
+        { rank: '6', suit: 'hearts' },
+        { rank: '6', suit: 'clubs' },
+      ],
+    };
+
+    expect(compareHands(hand1, hand2)).toBe(1); // hand1 (Full House, 5s over 8s) > hand2 (Full House, 5s over 6s)
+  });
+
+  test('should compare two Flush hands with the same high card', () => {
+    const hand1: Hand = {
+      cards: [
+        { rank: '3', suit: 'hearts' },
+        { rank: '5', suit: 'hearts' },
+        { rank: '7', suit: 'hearts' },
+        { rank: '9', suit: 'hearts' },
+        { rank: 'J', suit: 'hearts' },
+      ],
+    };
+
+    const hand2: Hand = {
+      cards: [
+        { rank: '3', suit: 'spades' },
+        { rank: '5', suit: 'spades' },
+        { rank: '7', suit: 'spades' },
+        { rank: '9', suit: 'spades' },
+        { rank: 'J', suit: 'spades' },
+      ],
+    };
+
+    expect(compareHands(hand1, hand2)).toBe(0); // hand1 (Flush, high card J) == hand2 (Flush, high card J)
+  });
+
+  test('should compare two Three of a Kind hands with different kicker values', () => {
+    const hand1: Hand = {
+      cards: [
+        { rank: '4', suit: 'hearts' },
+        { rank: '4', suit: 'spades' },
+        { rank: '4', suit: 'diamonds' },
+        { rank: '2', suit: 'clubs' },
+        { rank: 'A', suit: 'hearts' },
+      ],
+    };
+
+    const hand2: Hand = {
+      cards: [
+        { rank: '4', suit: 'hearts' },
+        { rank: '4', suit: 'spades' },
+        { rank: '4', suit: 'diamonds' },
+        { rank: '3', suit: 'clubs' },
+        { rank: 'K', suit: 'hearts' },
+      ],
+    };
+
+    expect(compareHands(hand1, hand2)).toBe(1); // hand1 (Three of a Kind, 4s, kicker A) > hand2 (Three of a Kind, 4s, kicker K)
+  });
 });
